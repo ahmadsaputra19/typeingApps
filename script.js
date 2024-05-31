@@ -14,13 +14,13 @@ const wpmDisplay = document.getElementById('wpm');
 
 document.getElementById('startButton').addEventListener('click', startTypingTest);
 
-function startTypingTest() {
+async function startTypingTest() {
     // Reset all values
     startTime = new Date().getTime();
     currentWordIndex = 0;
     totalWordsTyped = 0;
     correctCharsTyped = 0;
-    textToType = generateText();
+    textToType = await generateText();
     
     textInput.value = '';
     textInput.disabled = false;
@@ -31,13 +31,15 @@ function startTypingTest() {
     textInput.addEventListener('input', checkInput);
 }
 
-function generateText() {
-    const words = ["The", "quick", "brown", "fox", "jumps", "over", "the", "lazy", "dog", "and", "then", "runs", "away"];
-    let textArray = [];
-    for (let i = 0; i < 100; i++) {
-        textArray.push(words[Math.floor(Math.random() * words.length)]);
-    }
-    return textArray;
+async function generateText() {
+    const words = await fetchRandomWords(100);
+    return words;
+}
+
+async function fetchRandomWords(number) {
+    const response = await fetch(`https://random-word-api.herokuapp.com/word?number=${number}`);
+    const data = await response.json();
+    return data;
 }
 
 function updateTime() {
