@@ -1,26 +1,7 @@
-body {
-  font-family: Arial, sans-serif;
-}
-.container {
-  max-width: 600px;
-  margin: 0 auto;
-  padding: 20px;
-  text-align: center;
-}
-#word-container {
-  font-size: 24px;
-  margin-bottom: 20px;
-}
-#input-field {
-  font-size: 24px;
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 20px;
-}
-#timer {
-  font-size: 20px;
-  margin-bottom: 20px;
-}
-#language-select {
-  margin-bottom: 20px;
-}
+body { font-family: Arial, sans-serif; }
+.container { max-width: 600px; margin: 0 auto; padding: 20px; text-align: center; }
+#word-container { font-size: 24px; margin-bottom: 20px; }
+#input-field { font-size: 24px; width: 100%; padding: 10px; margin-bottom: 20px; }
+#timer { font-size: 20px; margin-bottom: 20px; }
+.wrong { color: red; }
+.right { color: green; }
