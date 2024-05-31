@@ -1,27 +1,53 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Typing Practice</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aplikasi Latihan Mengetik</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+      }
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+        text-align: center;
+      }
+      #word-container {
+        font-size: 24px;
+        margin-bottom: 20px;
+      }
+      #input-field {
+        font-size: 24px;
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 20px;
+      }
+      #timer {
+        font-size: 20px;
+        margin-bottom: 20px;
+      }
+      #language-select {
+        margin-bottom: 20px;
+      }
+    </style>
+  </head>
+  <body>
     <div class="container">
-        <h1>Typing Practice</h1>
-        <select id="languageSelect">
-            <option value="en">English</option>
-            <option value="id">Indonesian</option>
+      <h1>Latihan Mengetik</h1>
+      <div id="language-select">
+        <label>Pilih Bahasa: </label>
+        <select id="language">
+          <option value="en">Inggris</option>
+          <option value="id">Indonesia</option>
         </select>
-        <div class="text-display" id="textDisplay">Click "Start" to begin.</div>
-        <textarea id="textInput" placeholder="Start typing here..." rows="5" disabled></textarea>
-        <div class="results">
-            <p>Time: <span id="time">0</span> seconds</p>
-            <p>Accuracy: <span id="accuracy">0</span>%</p>
-            <p>WPM: <span id="wpm">0</span></p>
-        </div>
-        <button id="startButton">Start</button>
+      </div>
+      <div id="word-container">Tekan "Mulai" untuk memulai</div>
+      <input type="text" id="input-field" placeholder="Mulai mengetik..." disabled />
+      <div id="timer">Waktu: 60 detik</div>
+      <button id="start-button">Mulai</button>
     </div>
     <script src="script.js"></script>
-</body>
+  </body>
 </html>

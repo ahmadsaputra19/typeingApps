@@ -1,100 +1,51 @@
 // script.js
-let startTime;
+let words = [];
+let currentIndex = 0;
+let timeLeft = 60;
 let timerInterval;
-let textToType = [];
-let currentWordIndex = 0;
-let totalWordsTyped = 0;
-let correctCharsTyped = 0;
+const wordContainer = document.getElementById('word-container');
+const inputField = document.getElementById('input-field');
+const timer = document.getElementById('timer');
+const startButton = document.getElementById('start-button');
+const languageSelect = document.getElementById('language');
 
-const textDisplay = document.getElementById('textDisplay');
-const textInput = document.getElementById('textInput');
-const timeDisplay = document.getElementById('time');
-const accuracyDisplay = document.getElementById('accuracy');
-const wpmDisplay = document.getElementById('wpm');
-const languageSelect = document.getElementById('languageSelect');
-
-document.getElementById('startButton').addEventListener('click', startTypingTest);
-
-async function startTypingTest() {
-    // Reset all values
-    startTime = new Date().getTime();
-    currentWordIndex = 0;
-    totalWordsTyped = 0;
-    correctCharsTyped = 0;
-    textToType = await generateText();
-    
-    textInput.value = '';
-    textInput.disabled = false;
-    textInput.focus();
-    textDisplay.innerText = textToType[currentWordIndex];
-
-    timerInterval = setInterval(updateTime, 1000);
-    textInput.addEventListener('input', checkInput);
+async function fetchWords(language) {
+  const apiUrl = language === 'en' ? 'https://api.datamuse.com/words?ml=test' : 'https://api.datamuse.com/words?ml=coba&v=indonesia';
+  const response = await fetch(apiUrl);
+  const data = await response.json();
+  return data.map((wordObj) => wordObj.word);
 }
 
-async function generateText() {
-    const language = languageSelect.value;
-    const words = await fetchRandomWords(100, language);
-    return words;
-}
-
-async function fetchRandomWords(number, language) {
-    let apiUrl;
-    if (language === 'en') {
-        apiUrl = `https://random-word-api.herokuapp.com/word?number=${number}`;
-    } else if (language === 'id') {
-        apiUrl = `https://random-word-api.vercel.app/word?lang=id&number=${number}`;
+function startTimer() {
+  timerInterval = setInterval(() => {
+    timeLeft--;
+    timer.textContent = `Waktu: ${timeLeft} detik`;
+    if (timeLeft === 0) {
+      clearInterval(timerInterval);
+      inputField.disabled = true;
+      alert('Waktu habis!');
     }
-    
-    const response = await fetch(apiUrl);
-    const data = await response.json();
-    return data;
+  }, 1000);
 }
 
-function updateTime() {
-    const currentTime = new Date().getTime();
-    const timeElapsed = Math.floor((currentTime - startTime) / 1000);
-    timeDisplay.innerText = timeElapsed;
-
-    if (timeElapsed >= 60) {
-        clearInterval(timerInterval);
-        textInput.disabled = true;
-        textInput.removeEventListener('input', checkInput);
-    }
+async function startGame() {
+  words = await fetchWords(languageSelect.value);
+  currentIndex = 0;
+  wordContainer.textContent = words[currentIndex];
+  inputField.value = '';
+  inputField.disabled = false;
+  inputField.focus();
+  timeLeft = 60;
+  timer.textContent = `Waktu: ${timeLeft} detik`;
+  startTimer();
 }
 
-function checkInput() {
-    const currentText = textToType[currentWordIndex];
-    const typedText = textInput.value.trim();
-    totalWordsTyped = textInput.value.split(' ').length - 1;
+inputField.addEventListener('input', () => {
+  if (inputField.value.trim() === words[currentIndex]) {
+    currentIndex = (currentIndex + 1) % words.length;
+    wordContainer.textContent = words[currentIndex];
+    inputField.value = '';
+  }
+});
 
-    if (typedText === currentText) {
-        correctCharsTyped += currentText.length;
-        textInput.value = '';
-        currentWordIndex++;
-        if (currentWordIndex < textToType.length) {
-            textDisplay.innerText = textToType[currentWordIndex];
-        } else {
-            textDisplay.innerText = 'Well done!';
-            clearInterval(timerInterval);
-            textInput.disabled = true;
-            textInput.removeEventListener('input', checkInput);
-        }
-    }
-
-    const accuracy = calculateAccuracy();
-    const wpm = calculateWPM();
-
-    accuracyDisplay.innerText = accuracy;
-    wpmDisplay.innerText = wpm;
-}
-
-function calculateAccuracy() {
-    return Math.floor((correctCharsTyped / (totalWordsTyped * 5)) * 100);
-}
-
-function calculateWPM() {
-    const currentTime = new Date().getTime();
-    const timeElapsed = (currentTime - startTime) / 1000 / 60;
-    return Math.floor(totalWordsTyped / timeElapsed);
-}
+startButton.addEventListener('click', startGame);
