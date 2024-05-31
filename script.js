@@ -11,6 +11,7 @@ const textInput = document.getElementById('textInput');
 const timeDisplay = document.getElementById('time');
 const accuracyDisplay = document.getElementById('accuracy');
 const wpmDisplay = document.getElementById('wpm');
+const languageSelect = document.getElementById('languageSelect');
 
 document.getElementById('startButton').addEventListener('click', startTypingTest);
 
@@ -32,12 +33,20 @@ async function startTypingTest() {
 }
 
 async function generateText() {
-    const words = await fetchRandomWords(100);
+    const language = languageSelect.value;
+    const words = await fetchRandomWords(100, language);
     return words;
 }
 
-async function fetchRandomWords(number) {
-    const response = await fetch(`https://random-word-api.herokuapp.com/word?number=${number}`);
+async function fetchRandomWords(number, language) {
+    let apiUrl;
+    if (language === 'en') {
+        apiUrl = `https://random-word-api.herokuapp.com/word?number=${number}`;
+    } else if (language === 'id') {
+        apiUrl = `https://random-word-api.vercel.app/word?lang=id&number=${number}`;
+    }
+    
+    const response = await fetch(apiUrl);
     const data = await response.json();
     return data;
 }
